@@ -43,7 +43,7 @@ with app.app_context():
 
     db.session.commit()
 
-    print("Seeding appearance...")
+    print("Seeding appearances...")
     appearances_data = []
 
 
@@ -61,4 +61,9 @@ with app.app_context():
     db.session.add_all(appearances_data)
 
     db.session.commit()
+
+    print("Database seeded successfully!")
+    print(f"Episodes: {Episode.query.count()}")       
+    print(f"Guests: {Guest.query.count()}")            
+    print(f"Appearances: {Appearance.query.count()}") 
 
