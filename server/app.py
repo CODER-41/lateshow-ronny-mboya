@@ -72,6 +72,7 @@ def get_episode(id):
     
     return jsonify(episode_dict), 200
 
+
 @app.route('/guests', methods=['GET'])
 def get_guests():
 
@@ -80,6 +81,20 @@ def get_guests():
     guests_dict = [guest.to_dict(only =('id', 'name', 'occupation')) for guest in guests]
 
     return jsonify(guests_dict), 200
+
+
+
+@app.route('/episodes/<int:id>', methods=['DELETE'])
+def delete_episode(id):
+    episode = Episode.query.filter(Episode.id == id).first()
+
+    if episode is None:
+        return jsonify({"error": "Episode not found"}), 404
+    
+    db.session.delete(episode)
+    db.session.commit()
+    
+    return '', 204
 
 
 
