@@ -97,8 +97,44 @@ def delete_episode(id):
     return '', 204
 
 
+@app.route('/appearances', methods=['POST'])
+def create_appearance():
+    
+    data = request.get_json()
+
+    try:
+        new_appearance = Appearance(
+            rating=data.get('rating'),
+            episode_id=data.get('episode_id'),
+            guest_id=data.get('guest_id')
+        )
+
+        db.session.add(new_appearance)
+        db.session.commit()
+
+        appearance = Appearance.query.get(new_appearance.id)
+
+        response_dict = {
+            'id': appearance.id,
+            'rating': appearance.rating,
+            'guest_id': appearance.guest_id,
+            'episode_id': appearance.episode_id,
+
+            'episode': appearance.episode.to_dict(only=('id', 'date', 'number')),
+
+            'guest':appearance.guest.to_dict(only=('id', 'name', 'occupation'))
+        }
+
+        return jsonify(response_dict), 201
+    
+
+    except ValueError as e:
+        db.session.rollback()
+
+        return jsonify({"errors": ["validation errors"]}), 400
+    
 
 
      
-    
-
+if __name__ == '__main__':
+    app.run(port=5555, debug=True)
