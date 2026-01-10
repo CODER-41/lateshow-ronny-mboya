@@ -10,7 +10,9 @@ metadata = MetaData(naming_convention= {
 
 db = SQLAlchemy(metadata=metadata)
 
+
 class Episode(db.Model, SerializerMixin):
+
     __tablename__ = 'episodes'
 
     serialize_rules = ('-appearances.episode',)
@@ -31,6 +33,7 @@ class Episode(db.Model, SerializerMixin):
 
 
 class Guest(db.Model, SerializerMixin):
+
     __tablename__ = 'guests'
 
     serialize_rules = ('-appearances.guest',)
@@ -48,3 +51,35 @@ class Guest(db.Model, SerializerMixin):
     def __repr__(self):
         return f'<Guest {self.id}: {self.name}>'
     
+
+
+class Appearance(db.Model, SerializerMixin):
+
+    __tablename__ = 'appearances'
+
+    serialize_rules = ('-episode.appearances', '-guest.appearances',)
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    rating = db.Column(db.Integer)
+
+    episode_id = db.Column(db.Integer, db.ForeignKey('episodes.id'))
+
+    guest_id = db.Column(db.Integer, db.ForeignKey('guest.id'))
+
+    episode = db.relationship('Episode', back_populates='appearances')
+
+    guest = db.relationship('Guest', back_populates='appearances')
+
+
+    @validates('rating')
+    def validate_rating(self, key, rating):
+        if rating is None or rating < 1 or rating > 5:
+            raise ValueError("Rating must be between 1 and 5")
+        return rating
+    
+
+    def __repr__(self):
+        return f'<Appearance {self.id}: Guest {self.guest_id} on Episode {self.episode_id}>'
+    
+
