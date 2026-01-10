@@ -53,8 +53,8 @@ The application uses three main models:
 
 1. Clone the repository:
 bash:
-git clone <your-repo-url>
-cd lateshow-firstname-lastname
+git clone: https://github.com/CODER-41/lateshow-ronny-mboya.git
+cd lateshow-ronny-mboya
 
 
 2. Navigate to the server directory:
@@ -64,16 +64,19 @@ cd server
 
 3. Create a virtual environment:
 bash:
-python -m venv venv
-source venv/bin/activate  
+pip install pipenv 
 
 
-4. Install dependencies:
+4. Install dependencies and create virtual environment:
 bash:
-pip install -r requirements.txt
+pipenv install
+
+5. Activate the virtual environment:
+bash:
+pipenv shell
 
 
-5. Set up the database:
+6. Set up the database:
 bash:
 flask db init
 flask db migrate -m "Initial migration"
@@ -81,7 +84,7 @@ flask db upgrade
 python seed.py
 
 
-6. Run the application:
+7. Run the application:
 bash:
 python app.py
 
