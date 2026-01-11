@@ -2,22 +2,19 @@ from flask import Flask, request, jsonify
 from flask_migrate import Migrate
 from models import db, Episode, Guest, Appearance
 
+app = Flask(__name__)
 
-app  = Flask(__name__)
-
-app = config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///lateshow.db'
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///lateshow.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 app.json.compact = False
 
 migrate = Migrate(app, db)
-
 db.init_app(app)
+
 
 @app.route('/')
 def index():
-     return '''
+    return '''
     <h1> Welcome to the Late Show API!</h1>
     <p>The API is up and running.</p>
     <h2>Available Endpoints:</h2>
@@ -31,63 +28,47 @@ def index():
     <p>Visit the endpoints above or use the Postman collection to test the API.</p>
     '''
 
-@app.route('/episodes', nethods=['GET'])
+
+@app.route('/episodes', methods=['GET'])
 def get_episodes():
-     
-     
     episodes = Episode.query.all()
     episodes_dict = [episode.to_dict(only=('id', 'date', 'number')) for episode in episodes]
-
     return jsonify(episodes_dict), 200
 
 
-@app.route('/episodes/<int:id>', method=['GET'])
+@app.route('/episodes/<int:id>', methods=['GET'])
 def get_episode(id):
-     
     episode = Episode.query.filter(Episode.id == id).first()
+    
     if episode is None:
-        return jsonify(
-            {"error": "Episode not found"}
-        ), 404
+        return jsonify({"error": "Episode not found"}), 404
     
     episode_dict = episode.to_dict(only=('id', 'date', 'number', 'appearances'))
-
+    
     if 'appearances' in episode_dict:
         formatted_appearances = []
-
+        
         for appearance in episode_dict['appearances']:
             app_obj = Appearance.query.get(appearance['id'])
-
+            
             formatted_app = {
                 'id': appearance['id'],
                 'rating': appearance['rating'],
                 'episode_id': appearance['episode_id'],
                 'guest_id': appearance['guest_id'],
-
-                'guest':app_obj.guest.to_dict(only=('id', 'name', 'occupation'))
+                'guest': app_obj.guest.to_dict(only=('id', 'name', 'occupation'))
             }
             formatted_appearances.append(formatted_app)
-
+        
         episode_dict['appearances'] = formatted_appearances
     
     return jsonify(episode_dict), 200
 
 
-@app.route('/guests', methods=['GET'])
-def get_guests():
-
-    guests = Guest.query.all()
-
-    guests_dict = [guest.to_dict(only =('id', 'name', 'occupation')) for guest in guests]
-
-    return jsonify(guests_dict), 200
-
-
-
 @app.route('/episodes/<int:id>', methods=['DELETE'])
 def delete_episode(id):
     episode = Episode.query.filter(Episode.id == id).first()
-
+    
     if episode is None:
         return jsonify({"error": "Episode not found"}), 404
     
@@ -97,44 +78,48 @@ def delete_episode(id):
     return '', 204
 
 
+@app.route('/guests', methods=['GET'])
+def get_guests():
+    guests = Guest.query.all()
+    guests_dict = [guest.to_dict(only=('id', 'name', 'occupation')) for guest in guests]
+    return jsonify(guests_dict), 200
+
+
 @app.route('/appearances', methods=['POST'])
 def create_appearance():
-    
     data = request.get_json()
-
+    
     try:
         new_appearance = Appearance(
             rating=data.get('rating'),
             episode_id=data.get('episode_id'),
             guest_id=data.get('guest_id')
         )
-
+        
         db.session.add(new_appearance)
         db.session.commit()
-
+        
         appearance = Appearance.query.get(new_appearance.id)
-
+        
         response_dict = {
             'id': appearance.id,
             'rating': appearance.rating,
             'guest_id': appearance.guest_id,
             'episode_id': appearance.episode_id,
-
             'episode': appearance.episode.to_dict(only=('id', 'date', 'number')),
-
-            'guest':appearance.guest.to_dict(only=('id', 'name', 'occupation'))
+            'guest': appearance.guest.to_dict(only=('id', 'name', 'occupation'))
         }
-
+        
         return jsonify(response_dict), 201
-    
-
+        
     except ValueError as e:
         db.session.rollback()
-
+        return jsonify({"errors": [str(e)]}), 400
+        
+    except Exception as e:
+        db.session.rollback()
         return jsonify({"errors": ["validation errors"]}), 400
-    
 
 
-     
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

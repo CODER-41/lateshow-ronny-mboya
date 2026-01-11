@@ -23,7 +23,7 @@ class Episode(db.Model, SerializerMixin):
 
     number = db.Column(db.Integer)
 
-    appearances = db.relationship('Appearance', back_populates='episodes', cascade='all, delete-orpahn')
+    appearances = db.relationship('Appearance', back_populates='episode', cascade='all, delete-orphan')
 
     guests = association_proxy('appearances', 'guest')
 
@@ -65,7 +65,7 @@ class Appearance(db.Model, SerializerMixin):
 
     episode_id = db.Column(db.Integer, db.ForeignKey('episodes.id'))
 
-    guest_id = db.Column(db.Integer, db.ForeignKey('guest.id'))
+    guest_id = db.Column(db.Integer, db.ForeignKey('guests.id'))
 
     episode = db.relationship('Episode', back_populates='appearances')
 

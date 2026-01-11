@@ -12,7 +12,7 @@ with app.app_context():
     print("Seeding episodes...")
     episodes_data = []
 
-    with open('episode.csv', 'r') as file:
+    with open('episodes.csv', 'r') as file:
         csv_reader = csv.DictReader(file)
 
         for row in csv_reader:
@@ -35,7 +35,7 @@ with app.app_context():
         for row in csv_reader:
             guest = Guest(
                 name=row['Raw_Guest_List'],
-                occupation=row['GoogleKnowledge_Occupation']
+                occupation=row['GoogleKnowlege_Occupation']
             )
             guests_data.append(guest)
     
@@ -50,7 +50,7 @@ with app.app_context():
     for i in range(min(50, len(episodes_data), len(guests_data))):
 
         appearance = Appearance(
-            rating=(i % 5) + 1
+            rating=(i % 5) + 1,
 
             episode_id=episodes_data[i].id,
             guest_id=guests_data[i].id
