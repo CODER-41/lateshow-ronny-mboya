@@ -54,7 +54,7 @@ The application uses three main models:
 1. Clone the repository:
 bash:
 git clone: https://github.com/CODER-41/lateshow-ronny-mboya.git
-cd lateshow-ronny-mboya
+cd lateshow
 
 
 2. Navigate to the server directory:
@@ -78,9 +78,9 @@ pipenv shell
 
 6. Set up the database:
 bash:
-flask db init
-flask db migrate -m "Initial migration"
-flask db upgrade
+flask db init, 
+flask db migrate -m "Initial migration", 
+flask db upgrade, 
 python seed.py
 
 
@@ -89,7 +89,7 @@ bash:
 python app.py
 
 
-The API will be available at `http://localhost:5555`
+The API will be available at http://localhost:5555
 
 ## API Endpoints
 
@@ -255,12 +255,13 @@ curl -X DELETE http://localhost:5555/episodes/1
 
 ## Validation Rules
 
-- **Appearance rating**: Must be between 1 and 5 (inclusive)
+- **Appearance rating**: Must be between 1 and 5 
 - All validations return appropriate error messages and HTTP status codes
 
 ## Error Handling
 
 The API uses standard HTTP status codes:
+
 - 200 OK - Successful GET request
 - 201 Created - Successful POST request
 - 204 No Content - Successful DELETE request

@@ -1,0 +1,127 @@
+{
+  "info": {
+    "_postman_id": "5682cab1-8868-4116-8315-fe678c14c97c",
+    "name": "challenge-4-lateshow",
+    "description": "Postman collection for testing the Late Show API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Episodes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5555/episodes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5555",
+          "path": [
+            "episodes"
+          ]
+        },
+        "description": "Retrieves all episodes with id, date, and number fields"
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Guests",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5555/guests",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5555",
+          "path": [
+            "guests"
+          ]
+        },
+        "description": "Retrieves all guests with id, name, and occupation fields"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Episode by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5555/episodes/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5555",
+          "path": [
+            "episodes",
+            "1"
+          ]
+        },
+        "description": "Retrieves a specific episode with nested appearances and guest details"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Episode by ID",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5555/episodes/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5555",
+          "path": [
+            "episodes",
+            "1"
+          ]
+        },
+        "description": "Deletes an episode and all associated appearances (cascade delete)"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Appearance",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rating\": 5,\n  \"episode_id\": 2,\n  \"guest_id\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5555/appearances",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5555",
+          "path": [
+            "appearances"
+          ]
+        },
+        "description": "Creates a new appearance linking a guest to an episode with a rating (1-5)"
+      },
+      "response": []
+    }
+  ]
+}
